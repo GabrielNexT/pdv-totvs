@@ -1,7 +1,6 @@
 version: "3.9"
 
 services:
-
   db:
     image: postgres:14-alpine
     ports:
@@ -10,3 +9,20 @@ services:
       POSTGRES_DB: totvs
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    networks:
+      - default-network
+
+  pdv-totvs:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:80
+    depends_on:
+      - db
+    networks:
+      - default-network
+
+networks:
+  default-network:
+    driver: bridge
