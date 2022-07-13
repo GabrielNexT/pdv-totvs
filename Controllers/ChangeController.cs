@@ -4,21 +4,32 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 public class ChangeController : ControllerBase
 {
+  private readonly IChangeService changeService;
+
+  public ChangeController(IChangeService changeService)
+  {
+    this.changeService = changeService;
+  }
 
   [HttpPost]
-  public ActionResult<String> Save([FromBody] ChangeRequest body)
+  public ActionResult<Change> Save([FromBody] ChangeRequest body)
   {
     if (!ModelState.IsValid)
     {
       return BadRequest(ModelState);
     }
-    else if (body.AmountReceived < body.PurchaseValue)
+    if (body.AmountReceived < body.PurchaseValue)
     {
       ModelState.AddModelError("Change", "É necessaŕio que o valor recebido seja maior que o total da compra.");
       return BadRequest(ModelState);
     }
 
+    return Ok(changeService.processPurchase(body));
+  }
 
-    return Ok("Hello World!");
+  [HttpGet]
+  public ActionResult<Change> GetAction()
+  {
+    return Ok(this.changeService.getAllPurchases());
   }
 }

@@ -1,14 +1,25 @@
 using Microsoft.EntityFrameworkCore;
+using System.Data;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
+var services = builder.Services;
 
-builder.Services.AddDbContext<ChangeContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+string dbUrl = builder.Configuration.GetConnectionString("Default");
+
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+services.AddControllers();
+
+services.AddDbContext<ChangeContext>(options => options.UseNpgsql(dbUrl));
+
+services.AddTransient<IDbConnection>((sp) => new NpgsqlConnection(dbUrl));
+
+services.AddScoped<IChangeService, ChangeService>();
+services.AddScoped<IChangeRepository, ChangeRepository>();
 
 var app = builder.Build();
 
@@ -21,9 +32,9 @@ if (app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-  var services = scope.ServiceProvider;
+  var tmpServices = scope.ServiceProvider;
 
-  var context = services.GetRequiredService<ChangeContext>();
+  var context = tmpServices.GetRequiredService<ChangeContext>();
   context.Database.EnsureCreated();
 }
 
