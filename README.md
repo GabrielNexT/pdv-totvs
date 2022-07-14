@@ -10,6 +10,13 @@ Após isso, basta acessar o swagger na URL
 http://localhost:8000/swagger/index.html
 ```
 
+## Testes
+
+Para testar o projeto, basta executar o comando.
+```shell
+dotnet test
+```
+
 ## Requisitos
 
 - [X] .NET Core
@@ -23,10 +30,10 @@ http://localhost:8000/swagger/index.html
 ## Decisões
 
 ### Tipo de dado da moeda
-Para armazenar os valores monetários no banco de dados, foi usado o tipo de dado *bigint*. Ele foi escolhido por uma questão de performance e precisão. Como na tarefa nós usamos apenas duas casas decimais, é necessário que a entrada seja multiplicada por 100 ao ser armazenada e dividiva por 100 ao ser exibida para o usuário.
+Para armazenar os valores monetários no banco de dados, foi usado o tipo de dado *bigint*. Ele foi escolhido por uma questão de performance e precisão. Como na tarefa nós usamos apenas duas casas decimais, é necessário que a entrada seja multiplicada por 100 ao ser armazenada e dividiva por 100 ao ser exibida para o usuário. Caso seja necessário números maiores ou com mais casas decimais, eu usaria o *numeric*.
 
 ### DTOs
-O DTO foi divido em 2, *EntityRequest* e *EntityResponse*. 
+O DTO foi divido em 2, *EntityRequest* e *EntityResponse*.   
 Como o nome já diz, um é usado apenas para request, enquanto o outro é usado para response. No primeiro momento eu cheguei a usar o [AutoMapper](https://automapper.org/) para facilitar essa conversão, mas como a classe do projeto era pequena, acabei removendo. 
 
 ### Migração
